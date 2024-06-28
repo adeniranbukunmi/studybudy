@@ -1,0 +1,51 @@
+{% extends "main.html"%}
+{% block content %}
+<style>
+    .room_container{
+        display: grid;
+        grid-template-columns: 3fr 1fr;
+    }
+</style>
+<div class="room_container      ">
+    <div>
+        <h1>Topic:   {{room.topic_name}}</h1>
+        <h2>Description:  {{room.description}}</h2>
+
+        <div class="commen-wrapper">
+            <h3>
+                conversation
+            </h3>
+            <div>what is going on</div>
+            <hr>
+            {% for chat in room_chat %}
+            <div>
+                {% if request.user == chat.user_sending_msg %}
+                <a href="{% url 'delete_message' chat.id %}">Delete</a>
+                {% endif %}
+                <small>@{{chat.user_sending_msg}} {{chat.created|timesince}} ago </small>
+                <p>{{chat.body}}</p>
+                <hr> 
+            </div>
+            {% endfor %}
+    
+            {% if request.user.is_authenticated %}
+            <div class="comment-form">
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    <input type="text" name="chat_body" placeholder="send a message...."> 
+                    <!-- this input will not have a submit button, it when the user click enter that the message will go  -->
+                </form>
+            </div>
+            {% endif %}
+    
+        </div>
+    </div>
+    <div>
+        <h1>participants</h1>
+        {% for user in participants %}
+        <p> @{{user.username}}</p>
+        {%  endfor %}
+        <hr>
+    </div>
+</div>
+{% endblock content %}
